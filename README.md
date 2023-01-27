@@ -1,32 +1,22 @@
-# RepositorioTemplate
-Esse repositório é para ser utilizado pelos grupos como um template inicial, da home page do Projeto.
-As seções do Template NÃO DEVEM SER OMITIDAS, sendo TODAS RELEVANTES.
-
-**!! *Atenção: Renomeie o seu repositório para (Ano.Semestre)_(Grupo)_(Paradigma)_(NomeDoProjeto)*. !!** 
-
-Paradigmas:
- - Funcional
- - Logico
- - SMA
-
-**!! *Não coloque os nomes dos alunos no título do repositório*. !!**
-
-**!! *Exemplo de título correto: 2022.2_G1_Logico_ProjetoRoteirosAereos*. !!**
- 
- (Apague esses comentários)
-
-# NomeDoProjeto
+# Barganha
 
 **Disciplina**: FGA0210 - PARADIGMAS DE PROGRAMAÇÃO - T01 <br>
-**Nro do Grupo (de acordo com a Planilha de Divisão dos Grupos)**: XX<br>
-**Paradigma**: XXXXXXXXXX<br>
+**Nro do Grupo (de acordo com a Planilha de Divisão dos Grupos)**: 02<br>
+**Paradigma**: SMA<br>
 
 ## Alunos
-|Matrícula | Aluno |
-| -- | -- |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
 
+| Matrícula  | Aluno                             |
+| ---------- | --------------------------------- |
+| 19/0041871 | Abner Filipe Cunha Ribeiro        |
+| 19/0102390 | André Macedo Rodrigues Alves      |
+| 19/0012307 | Eduardo Afonso Dutra Silva        |
+| 18/0018728 | Igor Batista Paiva                |
+| 18/0033620 | João Henrique Cunha Paulino       |
+| 16/0152615 | João Pedro Elias de Moura         |
+| 18/0054554 | Paulo Batista                     |
+| 19/0019158 | Rafael Leão Teixeira de Magalhães |
+| 19/0020903 | Vitor Magalhães Lamego            |
 ## Sobre 
 Descreva o seu projeto em linhas gerais. 
 Use referências, links, que permitam conhecer um pouco mais sobre o projeto.
