@@ -68,7 +68,7 @@ public class BookSellerAgent extends Agent {
 		}
 
 		// Add the behaviour serving queries from buyer agents
-		// Servidor de Requisições de Ofertas
+		// Servidor de RequisiÃ§Ãµes de Ofertas
 		addBehaviour(new OfferRequestsServer());
 
 		// Add the behaviour serving purchase orders from buyer agents
@@ -84,7 +84,7 @@ public class BookSellerAgent extends Agent {
 	   with a PROPOSE message specifying the price. Otherwise a REFUSE message is
 	   sent back.
 	 */
-	// Servidor de Requisições de Ofertas
+	// Servidor de RequisiÃ§Ãµes de Ofertas
 	//FIPA PROTOCOLS: http://www.fipa.org/specs/fipa00030/
 	private class OfferRequestsServer extends CyclicBehaviour {
 
@@ -161,7 +161,7 @@ public class BookSellerAgent extends Agent {
 	/**
     This is invoked by the GUI when the user adds a new book for sale
 	 */
-	public void updateCatalogue(final String title, final int price) {
+	public void updateCatalogue(final String title, final int price, final int quality) {
 		addBehaviour(new OneShotBehaviour() {
 
 			private static final long serialVersionUID = 1L;
