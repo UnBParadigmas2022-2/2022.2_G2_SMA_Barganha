@@ -27,6 +27,7 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import javax.management.InvalidAttributeValueException;
 import javax.swing.*;
 
 /**
@@ -40,7 +41,7 @@ class BookSellerGui extends JFrame {
 
     private BookSellerAgent myAgent;
 
-    private JTextField titleField, priceField;
+    private JTextField titleField, initialPriceField, minPriceField;
 
     BookSellerGui(BookSellerAgent a) {
         super(a.getLocalName());
@@ -48,13 +49,16 @@ class BookSellerGui extends JFrame {
         myAgent = a;
 
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(2, 2));
+        p.setLayout(new GridLayout(3, 2));
         p.add(new JLabel("Book title:"));
         titleField = new JTextField(15);
         p.add(titleField);
-        p.add(new JLabel("Price:"));
-        priceField = new JTextField(15);
-        p.add(priceField);
+        p.add(new JLabel("Initial Price:"));
+        initialPriceField = new JTextField(15);
+        p.add(initialPriceField);
+        p.add(new JLabel("Minimum Price:"));
+        minPriceField = new JTextField(15);
+        p.add(minPriceField);
         getContentPane().add(p, BorderLayout.CENTER);
 
         JButton addButton = new JButton("Add");
@@ -62,10 +66,14 @@ class BookSellerGui extends JFrame {
             public void actionPerformed(ActionEvent ev) {
                 try {
                     String title = titleField.getText().trim();
-                    String price = priceField.getText().trim();
-                    myAgent.updateCatalogue(title, Integer.parseInt(price));
+                    String initialPrice = initialPriceField.getText().trim();
+                    String minPrice = minPriceField.getText().trim();
+                    if (Integer.parseInt(initialPrice) < Integer.parseInt(minPrice))
+                        throw new InvalidAttributeValueException("Initial price must be greater than minimum price.");
+                    myAgent.updateCatalogue(title, Integer.parseInt(initialPrice), Integer.parseInt(minPrice));
                     titleField.setText("");
-                    priceField.setText("");
+                    initialPriceField.setText("");
+                    minPriceField.setText("");
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(BookSellerGui.this, "Invalid values. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }

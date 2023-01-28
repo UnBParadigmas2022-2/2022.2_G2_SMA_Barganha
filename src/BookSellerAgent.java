@@ -40,14 +40,14 @@ public class BookSellerAgent extends Agent {
      */
     private static final long serialVersionUID = 1L;
     // The catalogue of books for sale (maps the title of a book to its price)
-    private Hashtable<String, Integer> catalogue;
+    private Hashtable<String, Book> catalogue;
     // The GUI by means of which the user can add books in the catalogue
     private BookSellerGui myGui;
 
     // Put agent initializations here
     protected void setup() {
         // Create the catalogue
-        catalogue = new Hashtable<String, Integer>();
+        catalogue = new Hashtable<String, Book>();
 
         // Create and show the GUI
         myGui = new BookSellerGui(this);
@@ -94,14 +94,26 @@ public class BookSellerAgent extends Agent {
             ACLMessage msg = myAgent.receive(mt);
             if (msg != null) {
                 // CFP Message received. Process it
-                String title = msg.getContent();
+                String[] receivedContent = msg.getContent().split("/");
                 ACLMessage reply = msg.createReply();
 
-                Integer price = (Integer) catalogue.get(title);
-                if (price != null) {
+                Book book = catalogue.get(receivedContent[0]);
+                if (book != null) {
+
+                    int productPrice = book.getInitialPrice();
+
+                    // Check if there was a discount request
+                    if (receivedContent.length > 1 && receivedContent[1].trim() != "") {
+                        int requestedPrice = Integer.valueOf(receivedContent[1]);
+
+                        productPrice = book.getMinPrice() < requestedPrice ? requestedPrice : book.getMinPrice();
+                    }
+
+                    System.out.println("productPrice: " + productPrice);
+
                     // The requested book is available for sale. Reply with the price
                     reply.setPerformative(ACLMessage.PROPOSE);
-                    reply.setContent(String.valueOf(price.intValue()));
+                    reply.setContent(String.valueOf(productPrice));
                 } else {
                     // The requested book is NOT available for sale.
                     reply.setPerformative(ACLMessage.REFUSE);
@@ -135,8 +147,8 @@ public class BookSellerAgent extends Agent {
                 String title = msg.getContent();
                 ACLMessage reply = msg.createReply();
 
-                Integer price = (Integer) catalogue.remove(title);
-                if (price != null) {
+                Book removedBook = catalogue.remove(title);
+                if (removedBook != null) {
                     reply.setPerformative(ACLMessage.INFORM);
                     System.out.println(title + " sold to agent " + msg.getSender().getName());
                 } else {
@@ -151,18 +163,40 @@ public class BookSellerAgent extends Agent {
         }
     }  // End of inner class OfferRequestsServer
 
+    private class Book {
+        private static final long serialVersionUID = 1L;
+        private Integer initialPrice;
+        private Integer minPrice;
+
+        public Book(final int initialPrice, final int minPrice) {
+            this.initialPrice = new Integer(initialPrice);
+            this.minPrice = new Integer(minPrice);
+        }
+
+        public Integer getInitialPrice() {
+            return this.initialPrice;
+        }
+
+        public Integer getMinPrice() {
+            return this.minPrice;
+        }
+    }
+
 
     /**
      * This is invoked by the GUI when the user adds a new book for sale
      */
-    public void updateCatalogue(final String title, final int price) {
+    public void updateCatalogue(final String title, final int initialPrice, final int minPrice) {
+        Book newBook = new Book(initialPrice, minPrice);
         addBehaviour(new OneShotBehaviour() {
 
             private static final long serialVersionUID = 1L;
 
             public void action() {
-                catalogue.put(title, new Integer(price));
-                System.out.println(title + " inserted into catalogue. Price = " + price);
+                catalogue.put(title, newBook);
+                System.out.println(title + " inserted into catalogue."
+                        + " initialPrice = " + initialPrice
+                        + ", minPrice = " + minPrice);
             }
         });
     }
