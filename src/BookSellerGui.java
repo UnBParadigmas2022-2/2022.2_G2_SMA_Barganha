@@ -67,7 +67,7 @@ class BookSellerGui extends JFrame {
 					String title = titleField.getText().trim();
 					String price = priceField.getText().trim();
 					String quality = qualityField.getText().trim();
-					myAgent.updateCatalogue(title, Integer.parseInt(price), Integer.parseInt(quality));
+					myAgent.updateCatalogue(title, Integer.parseInt(price), quality);
 					titleField.setText("");
 					priceField.setText("");
 					qualityField.setText("");

@@ -38,17 +38,44 @@ public class BookSellerAgent extends Agent {
 	/**
 	 * 
 	 */
+	
+	public class caracteristicas{
+		private int price;
+		private String quality;
+		
+		// Constructor
+		public caracteristicas(int price, String quality) {
+			this.price = price;
+			this.quality = quality;
+		}
+		
+		// get price
+		public int getPrice() {
+			return price;
+		}		
+		
+		// get quality
+		public String getQuality() {
+			return quality;
+		}
+	}
+	
 	private static final long serialVersionUID = 1L;
 	// The catalogue of books for sale (maps the title of a book to its price)
-	private Hashtable<String,Integer> catalogue;
+	/*private Hashtable<String,Integer> cataloguePrice;
+	private Hashtable<String,String> catalogueQuality;*/
+	private Hashtable<String, caracteristicas> catalogue;
 	// The GUI by means of which the user can add books in the catalogue
 	private BookSellerGui myGui;
 
 	// Put agent initializations here
 	protected void setup() {
 		// Create the catalogue
-		catalogue = new Hashtable<String,Integer>();
-
+		/*cataloguePrice = new Hashtable<String,Integer>();
+		catalogueQuality = new Hashtable<String,String>();
+		*/
+		catalogue = new Hashtable<String, caracteristicas>();
+		
 		// Create and show the GUI 
 		myGui = new BookSellerGui(this);
 		myGui.showGui();
@@ -96,20 +123,27 @@ public class BookSellerAgent extends Agent {
 			if (msg != null) {
 				// CFP Message received. Process it
 				String title = msg.getContent();
-				ACLMessage reply = msg.createReply();
+				ACLMessage replyPrice = msg.createReply();
+				// ACLMessage replyQuality = msg.createReply();
 
-				Integer price = (Integer) catalogue.get(title);
+				caracteristicas price = (caracteristicas) catalogue.get(title);
+				// String quality = catalogueQuality.get(title);
 				if (price != null) {
 					// The requested book is available for sale. Reply with the price
-					reply.setPerformative(ACLMessage.PROPOSE);
-					reply.setContent(String.valueOf(price.intValue()));
+					replyPrice.setPerformative(ACLMessage.PROPOSE);
+					replyPrice.setContent(String.valueOf(price.getPrice()));
+					/*
+					replyQuality.setPerformative(ACLMessage.PROPOSE);
+					replyQuality.setContent(String.valueOf(quality));
+					*/
 				}
 				else {
 					// The requested book is NOT available for sale.
-					reply.setPerformative(ACLMessage.REFUSE);
-					reply.setContent("not-available");
+					replyPrice.setPerformative(ACLMessage.REFUSE);
+					replyPrice.setContent("not-available");
 				}
-				myAgent.send(reply);
+				myAgent.send(replyPrice);
+				//myAgent.send(replyQuality);
 			}
 			else {
 				block();
@@ -138,7 +172,9 @@ public class BookSellerAgent extends Agent {
 				String title = msg.getContent();
 				ACLMessage reply = msg.createReply();
 
-				Integer price = (Integer) catalogue.remove(title);
+				/*Integer price = (Integer) cataloguePrice.remove(title);
+				catalogueQuality.remove(title);*/
+				caracteristicas price = (caracteristicas) catalogue.remove(title);
 				if (price != null) {
 					reply.setPerformative(ACLMessage.INFORM);
 					System.out.println(title+" sold to agent "+msg.getSender().getName());
@@ -161,14 +197,16 @@ public class BookSellerAgent extends Agent {
 	/**
     This is invoked by the GUI when the user adds a new book for sale
 	 */
-	public void updateCatalogue(final String title, final int price, final int quality) {
+	public void updateCatalogue(final String title, final int price, final String quality) {
 		addBehaviour(new OneShotBehaviour() {
 
 			private static final long serialVersionUID = 1L;
 
 			public void action() {
-				catalogue.put(title, new Integer(price));
-				System.out.println(title+" inserted into catalogue. Price = "+price);
+				catalogue.put(title, new caracteristicas(price, quality));
+				/*cataloguePrice.put(title, new Integer(price));
+				catalogueQuality.put(title, new String(quality));*/
+				System.out.println(title+" inserted into catalogue. Price = "+price +"Quality = "+quality);
 			}
 		} );
 	}
