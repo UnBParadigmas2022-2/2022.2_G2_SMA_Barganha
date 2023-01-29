@@ -103,7 +103,7 @@ public class BookBuyerAgent extends Agent {
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
-		private int proposal = 30; // The buyer will send 30 for the target book as a proposal
+		private int proposal = 130; // The buyer will send 30 for the target book as a proposal
 		private int bestPrice = proposal;  // The best offered price
 		private int currentSeller = 0;
 
@@ -142,8 +142,6 @@ public class BookBuyerAgent extends Agent {
 							// if the seller do not want to lower the price, the buyer will ask the next seller
 							if (priceSeller == price) {
 								System.out.println("Seller " + reply.getSender().getName() + " do not want to lower the price");
-								step = 0;
-								currentSeller = currentSeller + 1;
 								break;
 							}
 
@@ -159,6 +157,9 @@ public class BookBuyerAgent extends Agent {
 					if (repliesCnt >= sellerAgents.length) {
 						// We received all replies
 						step = 2;
+					} else {
+						currentSeller = currentSeller + 1;
+						step = 0;
 					}
 				}
 				else {
