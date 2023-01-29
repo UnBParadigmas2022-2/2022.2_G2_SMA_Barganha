@@ -33,6 +33,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
+import java.util.*;
+
 public class BookBuyerAgent extends Agent {
 
 	private static final long serialVersionUID = 1L;
@@ -40,6 +42,8 @@ public class BookBuyerAgent extends Agent {
 	private String targetBookTitle;
 	// The list of known seller agents
 	private AID[] sellerAgents;
+	
+	private String bookTitles;
 
 	// Put agent initializations here
 	protected void setup() {
@@ -72,6 +76,7 @@ public class BookBuyerAgent extends Agent {
 							sellerAgents[i] = result[i].getName();
 							System.out.println(sellerAgents[i].getName());
 						}
+						addBehaviour(new RequestPerformerBookList());
 					}
 					catch (FIPAException fe) {
 						fe.printStackTrace();
@@ -204,6 +209,68 @@ public class BookBuyerAgent extends Agent {
 		}
 	}  // End of inner class RequestPerformer
 	
+	private class RequestPerformerBookList extends Behaviour {
+
+		private static final long serialVersionUID = 1L;
+		private MessageTemplate mt; // The template to receive replies
+		private int step = 0;
+		private int repliesCnt = 0;
+		StringBuilder sb = new StringBuilder();
+
+		public void action() {
+			switch (step) {
+			case 0:
+				// Send the cfp to all sellers
+				ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
+				for (int i = 0; i < sellerAgents.length; ++i) {
+					cfp.addReceiver(sellerAgents[i]);
+				} 
+				cfp.setContent("all-books");
+				cfp.setConversationId("book-trade");
+				cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+				myAgent.send(cfp);
+				// Prepare the template to get proposals
+				mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+						MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+				step = 1;
+				break;
+			case 1:
+				// Receive all proposals/refusals from seller agents
+				ACLMessage reply = myAgent.receive(mt);
+				if (reply != null) {
+					if(reply.getPerformative() == ACLMessage.PROPOSE) {
+						sb.append(reply.getContent());
+					}
+					repliesCnt++;
+					if (repliesCnt >= sellerAgents.length) {
+						// We received all replies
+						bookTitles = sb.toString();
+						System.out.println("Lista de livros recebida: " + bookTitles);
+						step = 2; 
+					}
+				}
+				else {
+					block();
+				}
+				break;
+			}        
+		}
+
+		public boolean done() {
+			
+			boolean listRetreived = (step == 2);
+			
+			boolean isDone = false;
+			if (listRetreived) {
+				isDone = true;
+			}
+			else {
+				isDone = false;
+			}
+			
+			return isDone;
+		}
+	}
 	
 	// Put agent clean-up operations here
 	protected void takeDown() {
