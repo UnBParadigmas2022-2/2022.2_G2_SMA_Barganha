@@ -44,54 +44,61 @@ public class BookBuyerAgent extends Agent {
 	private AID[] sellerAgents;
 	
 	private String bookTitles;
+	
+	private BookBuyerGui myGui;
+	
+	private BookBuyerAgent thisAgent;
 
 	// Put agent initializations here
-	protected void setup() {
+	protected void setup() {		
+		thisAgent = this;
 		// Printout a welcome message
 		System.out.println("Hallo! Buyer-agent "+getAID().getName()+" is ready.");
-
-		// Get the title of the book to buy as a start-up argument
-		Object[] args = getArguments();
-		if (args != null && args.length > 0) {
-			targetBookTitle = (String) args[0];
-			System.out.println("Target book is "+targetBookTitle);
-
-			// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
-			addBehaviour(new TickerBehaviour(this, 10000) {
-
-				private static final long serialVersionUID = 1L;
-
-				protected void onTick() {
-					System.out.println("Trying to buy "+targetBookTitle);
-					// Update the list of seller agents
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription sd = new ServiceDescription();
-					sd.setType("book-selling");
-					template.addServices(sd);
-					try {
-						DFAgentDescription[] result = DFService.search(myAgent, template); 
-						System.out.println("Found the following seller agents:");
-						sellerAgents = new AID[result.length];
-						for (int i = 0; i < result.length; ++i) {
-							sellerAgents[i] = result[i].getName();
-							System.out.println(sellerAgents[i].getName());
-						}
-						addBehaviour(new RequestPerformerBookList());
-					}
-					catch (FIPAException fe) {
-						fe.printStackTrace();
-					}
-
-					// Perform the request
-					myAgent.addBehaviour(new RequestPerformer());
-				}
-			} );
+		
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("book-selling");
+		template.addServices(sd);
+		try {
+			DFAgentDescription[] result = DFService.search(this, template); 
+			System.out.println("Found the following seller agents:");
+			sellerAgents = new AID[result.length];
+			for (int i = 0; i < result.length; ++i) {
+				sellerAgents[i] = result[i].getName();
+				System.out.println(sellerAgents[i].getName());
+			}
+			addBehaviour(new RequestPerformerBookList());
 		}
-		else {
-			// Make the agent terminate
-			System.out.println("No target book title specified");
-			doDelete();
+		catch (FIPAException fe) {
+			fe.printStackTrace();
 		}
+
+//		// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
+//		addBehaviour(new TickerBehaviour(this, 10000) {
+//			private static final long serialVersionUID = 1L;
+//	
+//			protected void onTick() {
+//				System.out.println("Trying to buy "+targetBookTitle);
+//				// Update the list of seller agents
+//				DFAgentDescription template = new DFAgentDescription();
+//				ServiceDescription sd = new ServiceDescription();
+//				sd.setType("book-selling");
+//				template.addServices(sd);
+//				try {
+//					DFAgentDescription[] result = DFService.search(myAgent, template); 
+//					System.out.println("Found the following seller agents:");
+//					sellerAgents = new AID[result.length];
+//					for (int i = 0; i < result.length; ++i) {
+//						sellerAgents[i] = result[i].getName();
+//						System.out.println(sellerAgents[i].getName());
+//					}
+//					addBehaviour(new RequestPerformerBookList());
+//				}
+//				catch (FIPAException fe) {
+//					fe.printStackTrace();
+//				}
+//			}
+//		});
 	}
 
 
@@ -246,6 +253,8 @@ public class BookBuyerAgent extends Agent {
 						// We received all replies
 						bookTitles = sb.toString();
 						System.out.println("Lista de livros recebida: " + bookTitles);
+						myGui = new BookBuyerGui(thisAgent);
+						myGui.showGui();
 						step = 2; 
 					}
 				}
@@ -272,8 +281,45 @@ public class BookBuyerAgent extends Agent {
 		}
 	}
 	
+	public String[] getBookTitles() {
+		return bookTitles.split("/");
+	}
+	
+	public void performBuyRequest(String choosenBookTitle) {
+		targetBookTitle = choosenBookTitle;
+		
+		// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
+		addBehaviour(new TickerBehaviour(this, 10000) {
+			private static final long serialVersionUID = 1L;
+			
+			protected void onTick() {
+				System.out.println("Trying to buy "+targetBookTitle);
+				// Update the list of seller agents
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("book-selling");
+				template.addServices(sd);
+				try {
+					DFAgentDescription[] result = DFService.search(myAgent, template); 
+					System.out.println("Found the following seller agents:");
+					sellerAgents = new AID[result.length];
+					for (int i = 0; i < result.length; ++i) {
+						sellerAgents[i] = result[i].getName();
+						System.out.println(sellerAgents[i].getName());
+					}
+				}
+				catch (FIPAException fe) {
+							fe.printStackTrace();
+				}
+				// Perform the request
+				thisAgent.addBehaviour(new RequestPerformer());
+			}
+		});
+	}
+	
 	// Put agent clean-up operations here
 	protected void takeDown() {
+		myGui.dispose();
 		// Printout a dismissal message
 		System.out.println("Buyer-agent "+getAID().getName()+" terminating.");
 	}
