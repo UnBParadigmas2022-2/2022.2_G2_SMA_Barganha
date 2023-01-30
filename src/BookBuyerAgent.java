@@ -168,18 +168,24 @@ public class BookBuyerAgent extends Agent {
 				break;
 			case 2:
 				// Send the purchase order to the seller that provided the best offer
-				System.out.println("Send the purchase order to the seller that provided the best offer");
+				if (bestPrice > proposal) {
+					System.out.println("Unfortunately, there is no Seller with the desired price! My maximum price is: " + proposal + " and the best offer was: " + bestPrice);
+					myAgent.doDelete();
+				}
+				else {
+					System.out.println("Send the purchase order to the seller that provided the best offer");
 
-				ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-				order.addReceiver(bestSeller);
-				order.setContent(targetBookTitle);
-				order.setConversationId("book-trade");
-				order.setReplyWith("order"+System.currentTimeMillis());
-				myAgent.send(order);
-				// Prepare the template to get the purchase order reply
-				mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
-						MessageTemplate.MatchInReplyTo(order.getReplyWith()));
-				step = 3;
+					ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+					order.addReceiver(bestSeller);
+					order.setContent(targetBookTitle);
+					order.setConversationId("book-trade");
+					order.setReplyWith("order"+System.currentTimeMillis());
+					myAgent.send(order);
+					// Prepare the template to get the purchase order reply
+					mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+							MessageTemplate.MatchInReplyTo(order.getReplyWith()));
+					step = 3;
+				}
 				break;
 			case 3:
 				// Receive the purchase order reply
