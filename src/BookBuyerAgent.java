@@ -21,7 +21,6 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-//package examples.bookTrading;
 
 import jade.core.Agent;
 import jade.core.AID;
@@ -33,59 +32,48 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class BookBuyerAgent extends Agent {
 
 	private static final long serialVersionUID = 1L;
 	// The title of the book to buy
 	private String targetBookTitle;
+	// The amount of money that buyer agent has
+	private int proposal = 130; // The buyer will send 130 for the target book as a proposal
 	// The list of known seller agents
 	private AID[] sellerAgents;
 
+	private String bookTitles;
+
+	private BookBuyerGui myGui;
+
+	private BookBuyerAgent thisAgent;
+
 	// Put agent initializations here
 	protected void setup() {
+		thisAgent = this;
 		// Printout a welcome message
 		System.out.println("Hallo! Buyer-agent "+getAID().getName()+" is ready.");
 
-		// Get the title of the book to buy as a start-up argument
-		Object[] args = getArguments();
-		if (args != null && args.length > 0) {
-			targetBookTitle = (String) args[0];
-			System.out.println("Target book is "+targetBookTitle);
-
-			// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
-			addBehaviour(new TickerBehaviour(this, 10000) {
-
-				private static final long serialVersionUID = 1L;
-
-				protected void onTick() {
-					System.out.println("Trying to buy "+targetBookTitle);
-					// Update the list of seller agents
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription sd = new ServiceDescription();
-					sd.setType("book-selling");
-					template.addServices(sd);
-					try {
-						DFAgentDescription[] result = DFService.search(myAgent, template);
-						System.out.println("Found the following seller agents:");
-						sellerAgents = new AID[result.length];
-						for (int i = 0; i < result.length; ++i) {
-							sellerAgents[i] = result[i].getName();
-							System.out.println(sellerAgents[i].getName());
-						}
-					}
-					catch (FIPAException fe) {
-						fe.printStackTrace();
-					}
-
-					// Perform the request
-					myAgent.addBehaviour(new RequestPerformer());
-				}
-			} );
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("book-selling");
+		template.addServices(sd);
+		try {
+			DFAgentDescription[] result = DFService.search(this, template);
+			System.out.println("Found the following seller agents:");
+			sellerAgents = new AID[result.length];
+			for (int i = 0; i < result.length; ++i) {
+				sellerAgents[i] = result[i].getName();
+				System.out.println(sellerAgents[i].getName());
+			}
+			addBehaviour(new RequestPerformerBookList());
 		}
-		else {
-			// Make the agent terminate
-			System.out.println("No target book title specified");
-			doDelete();
+		catch (FIPAException fe) {
+			fe.printStackTrace();
 		}
 	}
 
@@ -103,7 +91,6 @@ public class BookBuyerAgent extends Agent {
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
-		private int proposal = 130; // The buyer will send 30 for the target book as a proposal
 		private int bestPrice = proposal;  // The best offered price
 		private int currentSeller = 0;
 
@@ -267,9 +254,131 @@ public class BookBuyerAgent extends Agent {
 		}
 	}  // End of inner class RequestPerformer
 
+	private class RequestPerformerBookList extends Behaviour {
+
+		private static final long serialVersionUID = 1L;
+		private MessageTemplate mt; // The template to receive replies
+		private int step = 0;
+		private int repliesCnt = 0;
+		StringBuilder sb = new StringBuilder();
+
+		public void action() {
+			switch (step) {
+			case 0:
+				// Send the cfp to all sellers
+				ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
+				for (int i = 0; i < sellerAgents.length; ++i) {
+					cfp.addReceiver(sellerAgents[i]);
+				}
+				cfp.setContent("all-books");
+				cfp.setConversationId("book-trade");
+				cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+				myAgent.send(cfp);
+				// Prepare the template to get proposals
+				mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+						MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
+				step = 1;
+				break;
+			case 1:
+				// Receive all proposals/refusals from seller agents
+				ACLMessage reply = myAgent.receive(mt);
+				if (reply != null) {
+					if(reply.getPerformative() == ACLMessage.PROPOSE) {
+						sb.append(reply.getContent());
+					}
+					repliesCnt++;
+					if (repliesCnt >= sellerAgents.length) {
+						// We received all replies
+						bookTitles = sb.toString();
+						System.out.println("Lista de livros recebida: " + bookTitles);
+						myGui = new BookBuyerGui(thisAgent);
+						myGui.showGui();
+						step = 2;
+					}
+				}
+				else {
+					block();
+				}
+				break;
+			}
+		}
+
+		public boolean done() {
+
+			boolean listRetreived = (step == 2);
+
+			boolean isDone = false;
+			if (listRetreived) {
+				isDone = true;
+			}
+			else {
+				isDone = false;
+			}
+
+			return isDone;
+		}
+	}
+
+	public String[] getBookTitles() {
+		String[] values = bookTitles.split("/");
+		List<String> finalResult = new ArrayList<>();
+		finalResult.add(values[0]);
+
+		for (int i = 0; i < values.length; i++) {
+			for (int j = 0; j < finalResult.size(); j++) {
+				if (values[i].equals(finalResult.get(j))) {
+					break;
+				}
+				if (j == finalResult.size() - 1) {
+					finalResult.add(values[i]);
+				}
+			}
+		}
+
+		return finalResult.toArray(new String[0]);
+	}
+
+	public void performBuyRequest(String choosenBookTitle, String proposalPrice) {
+		targetBookTitle = choosenBookTitle;
+		try {
+			proposal = Integer.parseInt(proposalPrice);
+		} catch(Exception e) {
+			System.out.println();
+		}
+
+
+		// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
+		addBehaviour(new TickerBehaviour(this, 10000) {
+			private static final long serialVersionUID = 1L;
+
+			protected void onTick() {
+				System.out.println("Trying to buy "+targetBookTitle);
+				// Update the list of seller agents
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("book-selling");
+				template.addServices(sd);
+				try {
+					DFAgentDescription[] result = DFService.search(myAgent, template);
+					System.out.println("Found the following seller agents:");
+					sellerAgents = new AID[result.length];
+					for (int i = 0; i < result.length; ++i) {
+						sellerAgents[i] = result[i].getName();
+						System.out.println(sellerAgents[i].getName());
+					}
+				}
+				catch (FIPAException fe) {
+							fe.printStackTrace();
+				}
+				// Perform the request
+				thisAgent.addBehaviour(new RequestPerformer());
+			}
+		});
+	}
 
 	// Put agent clean-up operations here
 	protected void takeDown() {
+		myGui.dispose();
 		// Printout a dismissal message
 		System.out.println("Buyer-agent "+getAID().getName()+" terminating.");
 	}
