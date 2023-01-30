@@ -73,6 +73,9 @@ public class BookSellerAgent extends Agent {
         // Add the behaviour serving purchase orders from buyer agents
         // Servidor de Pedidos de Compras
         addBehaviour(new PurchaseOrdersServer());
+        
+        // Add the behaviour serving steal orders from thief agents
+        addBehaviour(new StealOrdersServer());
     }
 
     /**
@@ -127,14 +130,50 @@ public class BookSellerAgent extends Agent {
     }  // End of inner class OfferRequestsServer
 
     /**
-     * Inner class PurchaseOrdersServer.
-     * This is the behaviour used by Book-seller agents to serve incoming
-     * offer acceptances (i.e. purchase orders) from buyer agents.
-     * The seller agent removes the purchased book from its catalogue
-     * and replies with an INFORM message to notify the buyer that the
-     * purchase has been sucesfully completed.
+     * Inner class StealOrdersServer.
      */
-    // Servidor de Pedidos de Compras
+    private class StealOrdersServer extends CyclicBehaviour {
+
+        private static final long serialVersionUID = 1L;
+
+        public void action() {
+            MessageTemplate mt = MessageTemplate.MatchConversationId("book-steal");
+            ACLMessage msg = myAgent.receive(mt);
+            if (msg != null) {
+                // ACCEPT_PROPOSAL Message received. Process it
+            	if(catalogue.size() != 0) {
+            		String title = getRandomBook();
+                    ACLMessage reply = msg.createReply();
+                    reply.setPerformative(ACLMessage.INFORM);
+                    reply.setContent(title);
+                    System.out.println("The book " + title + " was stolen by agent " + msg.getSender().getName());
+					System.out.println("Books remaining: " + catalogue.size());
+					myAgent.send(reply);
+            	} else {
+            		// The requested book has been sold or stolen to another buyer in the meanwhile .
+            		ACLMessage reply = msg.createReply();
+                    reply.setPerformative(ACLMessage.FAILURE);
+                    reply.setContent("not-available");
+                    myAgent.send(reply);
+            	}
+                
+
+       
+
+            } else {
+                block();
+            }
+        }
+        
+        private String getRandomBook() {
+        	Collection<String> books = catalogue.keySet();
+        	List<String> booksList = new ArrayList<>(books);
+        	Random rand = new Random();
+        	int index = rand.nextInt(booksList.size());
+        	return booksList.get(index);
+        }
+    }  // End of inner class StealOrdersServer
+    
     private class PurchaseOrdersServer extends CyclicBehaviour {
 
         private static final long serialVersionUID = 1L;
@@ -161,7 +200,7 @@ public class BookSellerAgent extends Agent {
                 block();
             }
         }
-    }  // End of inner class OfferRequestsServer
+    } 
 
     private class Book {
         private static final long serialVersionUID = 1L;
