@@ -18,8 +18,10 @@ public class BookBuyerGui extends JFrame {
 	private JList listaLivrosComponent;
 	private JLabel tituloLivroDesejaComprar;
 	private JLabel proposalLabel;
+	private JLabel qualidadeLivroDesejaComprar;
 	private JTextField inputLivro;
 	private JTextField inputProposal;
+	private JTextField inputQuality;
 	private JButton btnComprar;
 	
 	private BookBuyerAgent myAgent;
@@ -33,7 +35,7 @@ public class BookBuyerGui extends JFrame {
 		myAgent = a;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 386, 480);
+		setBounds(100, 100, 386, 510);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -73,7 +75,7 @@ public class BookBuyerGui extends JFrame {
 		contentPane.add(inputLivro);
 		inputLivro.setColumns(10);
 
-		proposalLabel = new JLabel("Digite o preço máximo que deseja pagar:");
+		proposalLabel = new JLabel("Digite o preco maximo que deseja pagar:");
 		proposalLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		proposalLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		proposalLabel.setBounds(0, 330, 370, 25);
@@ -83,6 +85,17 @@ public class BookBuyerGui extends JFrame {
 		inputProposal.setBounds(52, 360, 260, 20);
 		contentPane.add(inputProposal);
 		inputProposal.setColumns(10);
+		
+		qualidadeLivroDesejaComprar = new JLabel("Digite qualidade do livro que deseja comprar:");
+		qualidadeLivroDesejaComprar.setHorizontalAlignment(SwingConstants.CENTER);
+		qualidadeLivroDesejaComprar.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		qualidadeLivroDesejaComprar.setBounds(0, 380, 370, 25);
+		contentPane.add(qualidadeLivroDesejaComprar);
+		
+		inputQuality = new JTextField();
+		inputQuality.setBounds(52, 410, 260, 20);
+		contentPane.add(inputQuality);
+		inputQuality.setColumns(10);
 		
 		btnComprar = new JButton("Comprar");
 		btnComprar.addActionListener(new ActionListener() {
@@ -103,11 +116,11 @@ public class BookBuyerGui extends JFrame {
 					JOptionPane.showMessageDialog(BookBuyerGui.this, "Valor inválido", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 
-				if (found == 1 && priceOk == 1) myAgent.performBuyRequest(inputLivro.getText(), inputProposal.getText());
+				if (found == 1 && priceOk == 1) myAgent.performBuyRequest(inputLivro.getText(), inputProposal.getText(), inputQuality.getText());
 				else JOptionPane.showMessageDialog(BookBuyerGui.this, "Livro não encontrado", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		});
-		btnComprar.setBounds(135, 390, 89, 23);
+		btnComprar.setBounds(135, 440, 89, 23);
 		contentPane.add(btnComprar);
 	}
 	

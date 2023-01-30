@@ -37,10 +37,13 @@ import java.util.List;
 
 
 public class BookBuyerAgent extends Agent {
+	
 
 	private static final long serialVersionUID = 1L;
 	// The title of the book to buy
 	private String targetBookTitle;
+	// The quality of the book to buy
+	private String wantedBookQuality;
 	// The amount of money that buyer agent has
 	private int proposal = 130; // The buyer will send 130 for the target book as a proposal
 	// The list of known seller agents
@@ -93,6 +96,7 @@ public class BookBuyerAgent extends Agent {
 		private int step = 0;
 		private int bestPrice = proposal;  // The best offered price
 		private int currentSeller = 0;
+		private String finalQuality; // The quality of the book sold
 
 		public void action() {
 			switch (step) {
@@ -120,12 +124,14 @@ public class BookBuyerAgent extends Agent {
 				if (reply != null) {
 					// Reply received
 					if (reply.getPerformative() == ACLMessage.PROPOSE) {
-						// This is an offer
-						int price = Integer.parseInt(reply.getContent());
-
+						// This is an offer 
+						// Separando resposta 
+						String text = reply.getContent();
+						String[] resp = text.split(";");
+						String quality = resp[0];
+						int price = Integer.parseInt(resp[1]);
 						while (price > proposal) {
 							int priceSeller = askSellerToReducePrice(reply.getSender(), price);
-
 							// if the seller do not want to lower the price, the buyer will ask the next seller
 							if (priceSeller == price) {
 								System.out.println("Seller " + reply.getSender().getName() + " do not want to lower the price");
@@ -134,10 +140,35 @@ public class BookBuyerAgent extends Agent {
 
 							price = priceSeller;
 						}
-						if (bestSeller == null || price < bestPrice) {
-							// This is the best offer at present
-							bestPrice = price;
-							bestSeller = reply.getSender();
+						
+						switch(wantedBookQuality) {
+						case "Novo":
+							if(quality.equals("Novo")) {
+								if (bestSeller == null || price < bestPrice) {
+									// This is the best offer at present
+									bestPrice = price;
+									bestSeller = reply.getSender();
+									finalQuality = quality;
+								}
+							}
+							break;
+						case "Seminovo":
+							if(quality.equals("Novo") || quality.equals("Seminovo")) {
+								if (bestSeller == null || price < bestPrice) {
+									// This is the best offer at present
+									bestPrice = price;
+									bestSeller = reply.getSender();
+									finalQuality = quality;
+								}
+							}
+							break;
+						case "Usado":
+							if (bestSeller == null || price < bestPrice) {
+								// This is the best offer at present
+								bestPrice = price;
+								bestSeller = reply.getSender();
+								finalQuality = quality;
+							}
 						}
 					}
 					repliesCnt++;
@@ -183,6 +214,8 @@ public class BookBuyerAgent extends Agent {
 						// Purchase successful. We can terminate
 						System.out.println(targetBookTitle+" successfully purchased from agent "+reply.getSender().getName());
 						System.out.println("Price = "+bestPrice);
+						System.out.println("Quality = "+finalQuality);
+						System.out.println("Quality = "+finalQuality);
 						myAgent.doDelete();
 					}
 					else {
@@ -243,7 +276,9 @@ public class BookBuyerAgent extends Agent {
 				// Reply received
 				if (reply.getPerformative() == ACLMessage.PROPOSE) {
 					// This is an offer
-					sellerPrice = Integer.parseInt(reply.getContent());
+					String offer = reply.getContent();
+					String[] offer2 = offer.split(";");
+					sellerPrice = Integer.parseInt(offer2[1]);
 					System.out.println("Seller-agent "+seller.getName()+" accepted to reduce the price to "+sellerPrice+" from buyer "+getAID().getName());
 				}
 			} else {
@@ -338,8 +373,9 @@ public class BookBuyerAgent extends Agent {
 		return finalResult.toArray(new String[0]);
 	}
 
-	public void performBuyRequest(String choosenBookTitle, String proposalPrice) {
+	public void performBuyRequest(String choosenBookTitle, String proposalPrice, String qualityBook) {
 		targetBookTitle = choosenBookTitle;
+		wantedBookQuality = qualityBook;
 		try {
 			proposal = Integer.parseInt(proposalPrice);
 		} catch(Exception e) {

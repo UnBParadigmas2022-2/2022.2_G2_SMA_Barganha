@@ -41,7 +41,7 @@ class BookSellerGui extends JFrame {
 
     private BookSellerAgent myAgent;
 
-    private JTextField titleField, initialPriceField, minPriceField;
+    private JTextField titleField, initialPriceField, minPriceField, qualityField;
 
     BookSellerGui(BookSellerAgent a) {
         super(a.getLocalName());
@@ -49,7 +49,7 @@ class BookSellerGui extends JFrame {
         myAgent = a;
 
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(3, 2));
+        p.setLayout(new GridLayout(4, 2));
         p.add(new JLabel("Book title:"));
         titleField = new JTextField(15);
         p.add(titleField);
@@ -59,6 +59,9 @@ class BookSellerGui extends JFrame {
         p.add(new JLabel("Minimum Price:"));
         minPriceField = new JTextField(15);
         p.add(minPriceField);
+        p.add(new JLabel("Quality:"));
+        qualityField = new JTextField(15);
+        p.add(qualityField);
         getContentPane().add(p, BorderLayout.CENTER);
 
         JButton addButton = new JButton("Add");
@@ -68,12 +71,14 @@ class BookSellerGui extends JFrame {
                     String title = titleField.getText().trim();
                     String initialPrice = initialPriceField.getText().trim();
                     String minPrice = minPriceField.getText().trim();
+                    String quality = qualityField.getText().trim(); 
                     if (Integer.parseInt(initialPrice) < Integer.parseInt(minPrice))
                         throw new InvalidAttributeValueException("Initial price must be greater than minimum price.");
-                    myAgent.updateCatalogue(title, Integer.parseInt(initialPrice), Integer.parseInt(minPrice));
+                    myAgent.updateCatalogue(title, Integer.parseInt(initialPrice), Integer.parseInt(minPrice), quality);
                     titleField.setText("");
                     initialPriceField.setText("");
                     minPriceField.setText("");
+                    qualityField.setText("");
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(BookSellerGui.this, "Invalid values. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
