@@ -117,7 +117,8 @@ public class BookSellerAgent extends Agent {
 	                if (book != null) {
 	
 	                    int productPrice = book.getInitialPrice();
-	
+	                    String productQuality = book.getQuality() + ";";
+	                    
 	                    // Check if there was a discount request
 	                    if (receivedContent.length > 1 && receivedContent[1].trim() != "") {
 	                        int requestedPrice = Integer.valueOf(receivedContent[1]);
@@ -129,7 +130,7 @@ public class BookSellerAgent extends Agent {
 	
 	                    // The requested book is available for sale. Reply with the price
 	                    reply.setPerformative(ACLMessage.PROPOSE);
-	                    reply.setContent(String.valueOf(productPrice));
+	                    reply.setContent(productQuality + String.valueOf(productPrice));
 	                } else {
 	                    // The requested book is NOT available for sale.
 	                    reply.setPerformative(ACLMessage.REFUSE);
@@ -184,10 +185,12 @@ public class BookSellerAgent extends Agent {
         private static final long serialVersionUID = 1L;
         private Integer initialPrice;
         private Integer minPrice;
+        private String quality;
 
-        public Book(final int initialPrice, final int minPrice) {
+        public Book(final int initialPrice, final int minPrice, final String quality) {
             this.initialPrice = new Integer(initialPrice);
             this.minPrice = new Integer(minPrice);
+            this.quality = new String(quality);
         }
 
         public Integer getInitialPrice() {
@@ -197,14 +200,18 @@ public class BookSellerAgent extends Agent {
         public Integer getMinPrice() {
             return this.minPrice;
         }
+        
+        public String getQuality() {
+        	return this.quality;
+        }
     }
 
 
     /**
      * This is invoked by the GUI when the user adds a new book for sale
      */
-    public void updateCatalogue(final String title, final int initialPrice, final int minPrice) {
-        Book newBook = new Book(initialPrice, minPrice);
+    public void updateCatalogue(final String title, final int initialPrice, final int minPrice, final String quality) {
+        Book newBook = new Book(initialPrice, minPrice, quality);
         addBehaviour(new OneShotBehaviour() {
 
             private static final long serialVersionUID = 1L;
@@ -213,7 +220,8 @@ public class BookSellerAgent extends Agent {
                 catalogue.put(title, newBook);
                 System.out.println(title + " inserted into catalogue."
                         + " initialPrice = " + initialPrice
-                        + ", minPrice = " + minPrice);
+                        + ", minPrice = " + minPrice
+                        + ", quality = " + quality);
             }
         });
     }
@@ -222,11 +230,18 @@ public class BookSellerAgent extends Agent {
         String[] books = {"Jogos Vorazes", "Código Limpo", "Harry Potter", "Paradigma de Programação", "The Green Book", "Pequeno Príncipe", "Infiltrado", "Data Mining", "Bill Gates", "Saijojs"};
         Random random = new Random();
         int randomNumber = random.nextInt(10);
+        String qualityBook1 = "Novo";
 
         for (int i = 0; i < randomNumber; i++) {
             int randomPrice = random.nextInt(500);
             int minimumPrice = random.nextInt(randomPrice);
-            updateCatalogue(books[i], randomPrice, minimumPrice);
+            updateCatalogue(books[i], randomPrice, minimumPrice, qualityBook1);
+            if (qualityBook1.equals("Novo"))
+            	qualityBook1 = "Seminovo";
+            else if(qualityBook1.equals("Seminovo"))
+            	qualityBook1 = "Usado";
+            else
+            	qualityBook1 = "Novo";
         }
     }
 
