@@ -38,6 +38,8 @@ public class BookBuyerAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 	// The title of the book to buy
 	private String targetBookTitle;
+	// The amount of money that buyer agent has
+	private int proposal = 130; // The buyer will send 130 for the target book as a proposal
 	// The list of known seller agents
 	private AID[] sellerAgents;
 
@@ -50,6 +52,9 @@ public class BookBuyerAgent extends Agent {
 		Object[] args = getArguments();
 		if (args != null && args.length > 0) {
 			targetBookTitle = (String) args[0];
+			if(args.length == 2) {
+				proposal = Integer.valueOf((String) args[1]);
+			}
 			System.out.println("Target book is "+targetBookTitle);
 
 			// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
@@ -103,7 +108,6 @@ public class BookBuyerAgent extends Agent {
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
-		private int proposal = 130; // The buyer will send 30 for the target book as a proposal
 		private int bestPrice = proposal;  // The best offered price
 		private int currentSeller = 0;
 
