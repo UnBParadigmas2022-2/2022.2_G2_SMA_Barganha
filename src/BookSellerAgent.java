@@ -39,27 +39,6 @@ public class BookSellerAgent extends Agent {
 	 * 
 	 */
 	
-	public class caracteristicas{
-		private int price;
-		private String quality;
-		
-		// Constructor
-		public caracteristicas(int price, String quality) {
-			this.price = price;
-			this.quality = quality;
-		}
-		
-		// get price
-		public int getPrice() {
-			return price;
-		}		
-		
-		// get quality
-		public String getQuality() {
-			return quality;
-		}
-	}
-	
 	private static final long serialVersionUID = 1L;
 	// The catalogue of books for sale (maps the title of a book to its price)
 	/*private Hashtable<String,Integer> cataloguePrice;
@@ -123,27 +102,23 @@ public class BookSellerAgent extends Agent {
 			if (msg != null) {
 				// CFP Message received. Process it
 				String title = msg.getContent();
-				ACLMessage replyPrice = msg.createReply();
+				ACLMessage reply = msg.createReply();
 				// ACLMessage replyQuality = msg.createReply();
 
-				caracteristicas price = (caracteristicas) catalogue.get(title);
-				// String quality = catalogueQuality.get(title);
-				if (price != null) {
+				caracteristicas offer = (caracteristicas) catalogue.get(title);
+				int price = offer.getPrice();
+				String quality = offer.getQuality()+";";
+				if (offer != null) {
 					// The requested book is available for sale. Reply with the price
-					replyPrice.setPerformative(ACLMessage.PROPOSE);
-					replyPrice.setContent(String.valueOf(price.getPrice()));
-					/*
-					replyQuality.setPerformative(ACLMessage.PROPOSE);
-					replyQuality.setContent(String.valueOf(quality));
-					*/
+					reply.setPerformative(ACLMessage.PROPOSE);
+					reply.setContent(quality+(String.valueOf(price)));
 				}
 				else {
 					// The requested book is NOT available for sale.
-					replyPrice.setPerformative(ACLMessage.REFUSE);
-					replyPrice.setContent("not-available");
+					reply.setPerformative(ACLMessage.REFUSE);
+					reply.setContent("not-available");
 				}
-				myAgent.send(replyPrice);
-				//myAgent.send(replyQuality);
+				myAgent.send(reply);
 			}
 			else {
 				block();
@@ -206,7 +181,7 @@ public class BookSellerAgent extends Agent {
 				catalogue.put(title, new caracteristicas(price, quality));
 				/*cataloguePrice.put(title, new Integer(price));
 				catalogueQuality.put(title, new String(quality));*/
-				System.out.println(title+" inserted into catalogue. Price = "+price +"Quality = "+quality);
+				System.out.println(title+" inserted into catalogue. Price = "+price +" Quality = "+quality);
 			}
 		} );
 	}

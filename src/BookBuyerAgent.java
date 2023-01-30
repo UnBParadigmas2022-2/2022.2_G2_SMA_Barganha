@@ -34,10 +34,13 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class BookBuyerAgent extends Agent {
+	
 
 	private static final long serialVersionUID = 1L;
 	// The title of the book to buy
 	private String targetBookTitle;
+	// The quality of the book to buy
+	private String bookQuality;
 	// The list of known seller agents
 	private AID[] sellerAgents;
 
@@ -50,6 +53,7 @@ public class BookBuyerAgent extends Agent {
 		Object[] args = getArguments();
 		if (args != null && args.length > 0) {
 			targetBookTitle = (String) args[0];
+			bookQuality = (String) args[1];
 			System.out.println("Target book is "+targetBookTitle);
 
 			// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
@@ -103,6 +107,7 @@ public class BookBuyerAgent extends Agent {
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
+		private String finalQuality; // The quality of the book sold
 
 		public void action() {
 			switch (step) {
@@ -128,11 +133,39 @@ public class BookBuyerAgent extends Agent {
 					// Reply received
 					if (reply.getPerformative() == ACLMessage.PROPOSE) {
 						// This is an offer 
-						int price = Integer.parseInt(reply.getContent());
-						if (bestSeller == null || price < bestPrice) {
-							// This is the best offer at present
-							bestPrice = price;
-							bestSeller = reply.getSender();
+						// Separando resposta 
+						String text = reply.getContent();
+						String[] resp = text.split(";");
+						String quality = resp[0];
+						int price = Integer.parseInt(resp[1]);
+						switch(bookQuality) {
+						case "Novo":
+							if(quality.equals("Novo")) {
+								if (bestSeller == null || price < bestPrice) {
+									// This is the best offer at present
+									bestPrice = price;
+									bestSeller = reply.getSender();
+									finalQuality = quality;
+								}
+							}
+							break;
+						case "Seminovo":
+							if(quality.equals("Novo") || quality.equals("Seminovo")) {
+								if (bestSeller == null || price < bestPrice) {
+									// This is the best offer at present
+									bestPrice = price;
+									bestSeller = reply.getSender();
+									finalQuality = quality;
+								}
+							}
+							break;
+						case "Usado":
+							if (bestSeller == null || price < bestPrice) {
+								// This is the best offer at present
+								bestPrice = price;
+								bestSeller = reply.getSender();
+								finalQuality = quality;
+							}
 						}
 					}
 					repliesCnt++;
@@ -167,6 +200,7 @@ public class BookBuyerAgent extends Agent {
 						// Purchase successful. We can terminate
 						System.out.println(targetBookTitle+" successfully purchased from agent "+reply.getSender().getName());
 						System.out.println("Price = "+bestPrice);
+						System.out.println("Quality = "+finalQuality);
 						myAgent.doDelete();
 					}
 					else {
