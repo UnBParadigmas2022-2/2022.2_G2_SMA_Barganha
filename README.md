@@ -26,11 +26,21 @@ Capriche nessa seção, pois ela é a primeira a ser lida pelos interessados no 
 Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
 
 ## Instalação 
-**Linguagens**: xxxxxx<br>
-**Tecnologias**: xxxxxx<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
-Insira um manual ou um script para auxiliar ainda mais.
-Gifs animados e outras ilustrações são bem-vindos!
+**Linguagens**: Java<br>
+**Tecnologias**: Jade<br>
+
+Para rodar este projeto, será necessário ter o java e os binários do jade instalados em sua
+máquina.
+
+Instalação do java: 
+
+```
+sudo apt install default-jre
+```
+
+Instalação do jade:
+
+Entre no site do Jade (https://jade.tilab.com/download/jade/license/jade-download/?x=32&y=11) e instale um dos arquivos que contenha os binários .jar do Jade.
 
 ## Uso 
 Explique como usar seu projeto.
