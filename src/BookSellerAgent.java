@@ -49,6 +49,9 @@ public class BookSellerAgent extends Agent {
         // Create the catalogue
         catalogue = new Hashtable<String, Book>();
 
+        // Populate Seller Books Catalogue
+        populateCatalogue();
+
         // Create and show the GUI
         myGui = new BookSellerGui(this);
         myGui.showGui();
@@ -97,29 +100,43 @@ public class BookSellerAgent extends Agent {
                 String[] receivedContent = msg.getContent().split("/");
                 ACLMessage reply = msg.createReply();
 
-                Book book = catalogue.get(receivedContent[0]);
-                if (book != null) {
-
-                    int productPrice = book.getInitialPrice();
-
-                    // Check if there was a discount request
-                    if (receivedContent.length > 1 && receivedContent[1].trim() != "") {
-                        int requestedPrice = Integer.valueOf(receivedContent[1]);
-
-                        productPrice = book.getMinPrice() < requestedPrice ? requestedPrice : book.getMinPrice();
-                    }
-
-                    System.out.println("productPrice: " + productPrice);
-
-                    // The requested book is available for sale. Reply with the price
-                    reply.setPerformative(ACLMessage.PROPOSE);
-                    reply.setContent(String.valueOf(productPrice));
+                if(receivedContent[0].equals("all-books")) {
+                	StringBuilder sb = new StringBuilder();
+                	for(String key: catalogue.keySet()) {
+                		sb.append(key).append("/");
+                	}
+                	
+                	String titles = sb.toString();
+                	
+                	reply.setPerformative(ACLMessage.PROPOSE);
+                    reply.setContent(String.valueOf(titles));
+                    
+                    myAgent.send(reply);
                 } else {
-                    // The requested book is NOT available for sale.
-                    reply.setPerformative(ACLMessage.REFUSE);
-                    reply.setContent("not-available");
+	                Book book = catalogue.get(receivedContent[0]);
+	                if (book != null) {
+	
+	                    int productPrice = book.getInitialPrice();
+	
+	                    // Check if there was a discount request
+	                    if (receivedContent.length > 1 && receivedContent[1].trim() != "") {
+	                        int requestedPrice = Integer.valueOf(receivedContent[1]);
+	
+	                        productPrice = book.getMinPrice() < requestedPrice ? requestedPrice : book.getMinPrice();
+	                    }
+	
+	                    System.out.println("productPrice: " + productPrice);
+	
+	                    // The requested book is available for sale. Reply with the price
+	                    reply.setPerformative(ACLMessage.PROPOSE);
+	                    reply.setContent(String.valueOf(productPrice));
+	                } else {
+	                    // The requested book is NOT available for sale.
+	                    reply.setPerformative(ACLMessage.REFUSE);
+	                    reply.setContent("not-available");
+	                }
+	                myAgent.send(reply);
                 }
-                myAgent.send(reply);
             } else {
                 block();
             }
@@ -199,6 +216,18 @@ public class BookSellerAgent extends Agent {
                         + ", minPrice = " + minPrice);
             }
         });
+    }
+
+    private void populateCatalogue() {
+        String[] books = {"Jogos Vorazes", "Código Limpo", "Harry Potter", "Paradigma de Programação", "The Green Book", "Pequeno Príncipe", "Infiltrado", "Data Mining", "Bill Gates", "Saijojs"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(10);
+
+        for (int i = 0; i < randomNumber; i++) {
+            int randomPrice = random.nextInt(500);
+            int minimumPrice = random.nextInt(randomPrice);
+            updateCatalogue(books[i], randomPrice, minimumPrice);
+        }
     }
 
 
