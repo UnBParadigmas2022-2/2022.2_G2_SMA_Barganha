@@ -21,7 +21,6 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 *****************************************************************/
 
-//package examples.bookTrading;
 
 import jade.core.Agent;
 import jade.core.AID;
@@ -33,14 +32,14 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
-import java.lang.reflect.Array;
-import java.util.*;
 
 public class BookBuyerAgent extends Agent {
 
 	private static final long serialVersionUID = 1L;
 	// The title of the book to buy
 	private String targetBookTitle;
+	// The amount of money that buyer agent has
+	private int proposal = 130; // The buyer will send 130 for the target book as a proposal
 	// The list of known seller agents
 	private AID[] sellerAgents;
 
@@ -89,7 +88,6 @@ public class BookBuyerAgent extends Agent {
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
-		private int proposal = 130; // The buyer will send 30 for the target book as a proposal
 		private int bestPrice = proposal;  // The best offered price
 		private int currentSeller = 0;
 
@@ -252,7 +250,7 @@ public class BookBuyerAgent extends Agent {
 			return sellerPrice;
 		}
 	}  // End of inner class RequestPerformer
-	
+
 	private class RequestPerformerBookList extends Behaviour {
 
 		private static final long serialVersionUID = 1L;
@@ -339,8 +337,14 @@ public class BookBuyerAgent extends Agent {
 		return finalResults;
 	}
 
-	public void performBuyRequest(String choosenBookTitle) {
+	public void performBuyRequest(String choosenBookTitle, String proposalPrice) {
 		targetBookTitle = choosenBookTitle;
+		try {
+			proposal = Integer.parseInt(proposalPrice);
+		} catch(Exception e) {
+			System.out.println();
+		}
+
 
 		// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
 		addBehaviour(new TickerBehaviour(this, 10000) {
