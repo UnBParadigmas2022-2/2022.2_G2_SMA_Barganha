@@ -260,3 +260,44 @@ public class BookSellerAgent extends Agent {
         System.out.println("Seller-agent " + getAID().getName() + " terminating.");
     }
 }
+>>>>>>> 93f345d92aea5432ffab113454c09e81b2122fbe
+
+
+    /**
+     * This is invoked by the GUI when the user adds a new book for sale
+     */
+    public void updateCatalogue(final String title, final int initialPrice, final int minPrice, final String quality) {
+        Book newBook = new Book(initialPrice, minPrice, quality);
+        addBehaviour(new OneShotBehaviour() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void action() {
+                catalogue.put(title, newBook);
+                System.out.println(title + " inserted into catalogue."
+                        + " initialPrice = " + initialPrice
+                        + ", minPrice = " + minPrice
+                        + ", quality = " + quality);
+            }
+        });
+    }
+
+    private void populateCatalogue() {
+        String[] books = {"Jogos Vorazes", "Código Limpo", "Harry Potter", "Paradigma de Programação", "The Green Book", "Pequeno Príncipe", "Infiltrado", "Data Mining", "Bill Gates", "Saijojs"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(10);
+        String qualityBook1 = "Novo";
+
+        for (int i = 0; i < randomNumber; i++) {
+            int randomPrice = random.nextInt(500);
+            int minimumPrice = random.nextInt(randomPrice);
+            updateCatalogue(books[i], randomPrice, minimumPrice, qualityBook1);
+            if (qualityBook1.equals("Novo"))
+            	qualityBook1 = "Seminovo";
+            else if(qualityBook1.equals("Seminovo"))
+            	qualityBook1 = "Usado";
+            else
+            	qualityBook1 = "Novo";
+        }
+    }
+

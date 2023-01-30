@@ -215,6 +215,7 @@ public class BookBuyerAgent extends Agent {
 						System.out.println(targetBookTitle+" successfully purchased from agent "+reply.getSender().getName());
 						System.out.println("Price = "+bestPrice);
 						System.out.println("Quality = "+finalQuality);
+						System.out.println("Quality = "+finalQuality);
 						myAgent.doDelete();
 					}
 					else {
