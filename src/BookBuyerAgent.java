@@ -33,6 +33,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class BookBuyerAgent extends Agent {
@@ -345,7 +346,24 @@ public class BookBuyerAgent extends Agent {
 	}
 
 	public String[] getBookTitles() {
-		return bookTitles.split("/");
+		String[] values = bookTitles.split("/");
+		String[] finalResults = new String[values.length];
+		finalResults[0] = values[0];
+		int indexAdd = 1;
+
+		for (int i = 0; i < values.length; i++) {
+			for (int j = 0; j < finalResults.length; j++) {
+				if (values[i].equals(finalResults[j])) {
+					break;
+				}
+				if (j == finalResults.length - 1) {
+					finalResults[indexAdd] = values[i];
+					indexAdd++;
+				}
+			}
+		}
+
+		return finalResults;
 	}
 
 	public void performBuyRequest(String choosenBookTitle) {
