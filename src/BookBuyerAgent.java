@@ -73,33 +73,6 @@ public class BookBuyerAgent extends Agent {
 		catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
-
-//		// Add a TickerBehaviour that schedules a request to seller agents every 10 seconds
-//		addBehaviour(new TickerBehaviour(this, 10000) {
-//			private static final long serialVersionUID = 1L;
-//
-//			protected void onTick() {
-//				System.out.println("Trying to buy "+targetBookTitle);
-//				// Update the list of seller agents
-//				DFAgentDescription template = new DFAgentDescription();
-//				ServiceDescription sd = new ServiceDescription();
-//				sd.setType("book-selling");
-//				template.addServices(sd);
-//				try {
-//					DFAgentDescription[] result = DFService.search(myAgent, template);
-//					System.out.println("Found the following seller agents:");
-//					sellerAgents = new AID[result.length];
-//					for (int i = 0; i < result.length; ++i) {
-//						sellerAgents[i] = result[i].getName();
-//						System.out.println(sellerAgents[i].getName());
-//					}
-//					addBehaviour(new RequestPerformerBookList());
-//				}
-//				catch (FIPAException fe) {
-//					fe.printStackTrace();
-//				}
-//			}
-//		});
 	}
 
 

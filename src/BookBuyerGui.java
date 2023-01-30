@@ -90,11 +90,10 @@ public class BookBuyerGui extends JFrame {
 	}
 	
 	public void showGui() {
-        pack();
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        int centerX = (int) screenSize.getWidth() / 2;
-//        int centerY = (int) screenSize.getHeight() / 2;
-//        setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int centerX = (int) screenSize.getWidth() / 2;
+        int centerY = (int) screenSize.getHeight() / 2;
+        setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
         super.setVisible(true);
     }
 }

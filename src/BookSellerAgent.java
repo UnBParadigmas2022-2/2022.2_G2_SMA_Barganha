@@ -49,6 +49,9 @@ public class BookSellerAgent extends Agent {
         // Create the catalogue
         catalogue = new Hashtable<String, Book>();
 
+        // Populate Seller Books Catalogue
+        populateCatalogue();
+
         // Create and show the GUI
         myGui = new BookSellerGui(this);
         myGui.showGui();
@@ -213,6 +216,18 @@ public class BookSellerAgent extends Agent {
                         + ", minPrice = " + minPrice);
             }
         });
+    }
+
+    private void populateCatalogue() {
+        String[] books = {"Jogos Vorazes", "Código Limpo", "Harry Potter", "Paradigma de Programação", "The Green Book", "Pequeno Príncipe", "Infiltrado", "Data Mining", "Bill Gates", "Saijojs"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(10);
+
+        for (int i = 0; i < randomNumber; i++) {
+            int randomPrice = random.nextInt(500);
+            int minimumPrice = random.nextInt(randomPrice);
+            updateCatalogue(books[i], randomPrice, minimumPrice);
+        }
     }
 
 
