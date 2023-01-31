@@ -188,11 +188,21 @@ Apresente, brevemente, como cada membro do grupo contribuiu para o projeto.
 
 ## Outros
 
-Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:
-(i) Lições Aprendidas;
-(ii) Percepções;
-(iii) Contribuições e Fragilidades, e
-(iV) Trabalhos Futuros.
+- **Lições Aprendidas**
+	- A forma como é feita a comunicação entre os agentes, em um Sistema Multi Agente, deve ser algo bem definido entre os dois lados para que não exista ruído na comunicação e nas percepções de cada um.
+	- Sempre é possível encontrar algum detalhe que pode ser melhorado na interação entre os agentes a fim de torná-la cada vez mais próxima do real.
+- **Percepções**
+	- O paradigma permite abstrair muitos detalhes de relações diversas, permitindo que o próprio tema abordado pelo grupo seja abordado de forma mais aprofundada.
+	- A comunicação realizada no processo de barganha necessita de várias interações entre os agentes, caso sejam usados diversos agentes, poderia haver problema de performance.
+- **Contribuições e Fragilidades**
+	- O input da qualidade do livre permite escrever qualquer coisa, causando erro caso o usuário escreva uma opção inválida.
+	- Existe uma fragilidade na forma como o agente Seller dá o desconto, sendo sempre descontos incrementais de 5 reais.
+- **Trabalhos Futuros**
+	- Substituir inputs de texto livre por selects com opções pré-estabelecidas
+	- Estabelecer uma variável de estresse para a negociação em que algum lado "se cansa"
+	- Realizar compras cíclicas e não encerrar o agente depois da primeira compra
+	- Trabalhar com decisões baseadas em um valor monetário que o agente tem e que vai diminuindo conforme ele realiza compras.
+	- Trabalhar com estoque de livro para o agente Seller, definindo descontos que podem ser dados de acordo com oferta e demanda daquele livro.
 
 ## Fontes
 
