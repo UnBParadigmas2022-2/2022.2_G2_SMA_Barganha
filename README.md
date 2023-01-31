@@ -127,30 +127,24 @@ Barganha:
 
 ## Screenshots
 
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
-
-Buyer Agent:
+### Buyer Agent
 
 ![image](https://user-images.githubusercontent.com/71379045/215627516-906fcb32-221d-4c7b-8f69-bd96f999cf35.png)
 
-Seller Agent:
+### Seller Agent
 
 ![image](https://user-images.githubusercontent.com/71379045/215627346-e898ad72-c302-4774-8c11-546497d55b95.png)
 
-Gui Agent:
+### Gui Agent
 
 ![image](https://user-images.githubusercontent.com/71379045/215627451-73f09314-f896-4eb5-b9a7-693c84ccd98b.png)
-
-
-
 
 ## Instalação
 
 **Linguagens**: Java<br>
 **Tecnologias**: Jade<br>
 
-Para rodar este projeto, será necessário ter o java e os binários do jade instalados em sua
-máquina.
+Para rodar este projeto, será necessário ter o Java e os binários do Jade instalados em sua máquina.
 
 Instalação do java:
 
@@ -160,7 +154,7 @@ sudo apt install default-jre
 
 Instalação do jade:
 
-Entre no site do Jade (https://jade.tilab.com/download/jade/license/jade-download/?x=32&y=11) e instale um dos arquivos que contenha os binários .jar do Jade.
+Entre no [site do Jade](https://jade.tilab.com/download/jade/license/jade-download/?x=32&y=11) e instale um dos arquivos que contenha os binários .jar do Jade.
 
 ## Uso
 
@@ -199,5 +193,5 @@ Apresente, brevemente, como cada membro do grupo contribuiu para o projeto.
 
 ## Fontes
 
-Site oficial do Jade: https://jade.tilab.com/
-Tutorial de Jade com o exemplo do "Book trading": https://jade.tilab.com/doc/tutorials/JADEProgramming-Tutorial-for-beginners.pdf
+- Site oficial do Jade: https://jade.tilab.com/
+- Tutorial de Jade com o exemplo do "Book trading": https://jade.tilab.com/doc/tutorials/JADEProgramming-Tutorial-for-beginners.pdf
