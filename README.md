@@ -129,6 +129,21 @@ Barganha:
 
 Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
 
+Buyer Agent:
+
+![image](https://user-images.githubusercontent.com/71379045/215627516-906fcb32-221d-4c7b-8f69-bd96f999cf35.png)
+
+Seller Agent:
+
+![image](https://user-images.githubusercontent.com/71379045/215627346-e898ad72-c302-4774-8c11-546497d55b95.png)
+
+Gui Agent:
+
+![image](https://user-images.githubusercontent.com/71379045/215627451-73f09314-f896-4eb5-b9a7-693c84ccd98b.png)
+
+
+
+
 ## Instalação
 
 **Linguagens**: Java<br>
