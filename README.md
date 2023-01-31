@@ -156,6 +156,17 @@ Instalação do jade:
 
 Entre no [site do Jade](https://jade.tilab.com/download/jade/license/jade-download/?x=32&y=11) e instale um dos arquivos que contenha os binários .jar do Jade.
 
+Configurações no Eclipse:
+
+Para rodar o projeto, é necessário configurar o classPath do Eclipse conforme os passos abaixo:
+
+- Clique com o botão direito no projeto
+- Selecione Build Path > Configure Build Path
+- Irá aparecer uma tela semelhante à essa:
+![image](https://user-images.githubusercontent.com/71379045/215650918-7dd57e57-ebd4-4671-8139-c04dac547355.png)
+- Clique em Add External Jars e adicione o seu arquivo .jar ao ClassPath
+
+
 ## Uso
 
 - Iniciar a interface do Jade com os elementos principais obrigatórios
