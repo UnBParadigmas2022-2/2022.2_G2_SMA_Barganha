@@ -125,19 +125,19 @@ Barganha:
 
 ```
 
-## Screenshots
+## <a id="screenshots">Screenshots</a>
 
 ### Buyer Agent
 
-![image](https://user-images.githubusercontent.com/71379045/215627516-906fcb32-221d-4c7b-8f69-bd96f999cf35.png)
+![Buyer Agent GUI](https://user-images.githubusercontent.com/71379045/215627516-906fcb32-221d-4c7b-8f69-bd96f999cf35.png)
 
 ### Seller Agent
 
-![image](https://user-images.githubusercontent.com/71379045/215627346-e898ad72-c302-4774-8c11-546497d55b95.png)
+![Seller Agent GUI](https://user-images.githubusercontent.com/71379045/215627346-e898ad72-c302-4774-8c11-546497d55b95.png)
 
 ### Gui Agent
 
-![image](https://user-images.githubusercontent.com/71379045/215627451-73f09314-f896-4eb5-b9a7-693c84ccd98b.png)
+![GUI Agent](https://user-images.githubusercontent.com/71379045/215627451-73f09314-f896-4eb5-b9a7-693c84ccd98b.png)
 
 ## Instalação
 
@@ -158,11 +158,17 @@ Entre no [site do Jade](https://jade.tilab.com/download/jade/license/jade-downlo
 
 ## Uso
 
+- Iniciar a interface do Jade com os elementos principais obrigatórios
+- Iniciar pelo menos um agente vendedor
+- Iniciar um agente comprador
+- Preencher as informações nas interfaces e clicar nos botões de ação, conforme as imagens mostradas na Seção [Screenshots](#screenshots)
+- Para mais informações veja o [vídeo da apresentação](#video)
+
 Explique como usar seu projeto.
 Procure ilustrar em passos, com apoio de telas do software, seja com base na interface gráfica, seja com base no terminal.
 Nessa seção, deve-se revelar de forma clara sobre o funcionamento do software.
 
-## Vídeo
+## <a id="video">Vídeo</a>
 
 O vídeo da apresentação pode ser acessado através do link: https://youtu.be/easks3yufxs.
 
