@@ -165,7 +165,7 @@ Para rodar o projeto, é necessário configurar o classPath do Eclipse conforme 
 - Irá aparecer uma tela semelhante à essa:
 ![image](https://user-images.githubusercontent.com/71379045/215650918-7dd57e57-ebd4-4671-8139-c04dac547355.png)
 - Clique em Add External Jars e adicione o seu arquivo .jar ao ClassPath
-
+- Verifique se o Eclipse identificou os imports do jade
 
 ## Uso
 
